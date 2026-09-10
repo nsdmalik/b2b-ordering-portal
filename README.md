@@ -1,10 +1,26 @@
 # B2B Ordering Portal
 
+[![Tests](https://github.com/nsdmalik/b2b-ordering-portal/actions/workflows/test.yml/badge.svg)](https://github.com/nsdmalik/b2b-ordering-portal/actions/workflows/test.yml)
+
 **Regional pricing, case-pack rules, and revision-aware preorders in one working reference application.**
 
 A distributor in Canada should see Canadian prices, submit valid case quantities, and revise an order without overwriting a teammate's newer version. Operations should control the preorder window while retaining the prices each buyer actually submitted.
 
 This portal implements that workflow with a small Python service, SQLite, and a responsive browser interface. All accounts, products, and prices are fictional.
+
+## Walk through an order
+
+| Step | What the application does |
+| --- | --- |
+| Select North Supply | Loads Canadian prices and CAD totals. |
+| Add six Studio storage cases | Calculates a CAD 144.00 order using server-side prices. |
+| Switch to Coast Supply | Loads US prices; North Supply's orders are not shown. |
+| Revise an order from two tabs | Rejects the stale second update with HTTP 409. |
+| Close the window as Operations | Rejects new submissions and revisions. |
+
+The browser never supplies an authoritative price. Each saved order includes its currency, revision, and line-price snapshot. Revisions use current regional prices, while the event trail preserves previous submissions.
+
+[Order rules and persistence](orders.py) · [HTTP boundary tests](test_server.py)
 
 ## Run locally
 
